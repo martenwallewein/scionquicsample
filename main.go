@@ -12,7 +12,6 @@ import (
 
 	"github.com/anacrolix/tagflag"
 	log "github.com/inconshreveable/log15"
-	optimizedconn "github.com/johannwagner/scion-optimized-connection/pkg"
 	"github.com/lucas-clemente/quic-go"
 	"github.com/netsec-ethz/scion-apps/pkg/appnet"
 	"github.com/netsec-ethz/scion-apps/pkg/appnet/appquic"
@@ -100,12 +99,10 @@ func runClient(local, remote string, startPort int) {
 	Check(err)
 	remoteAddr.Host.Port = startPort
 	fmt.Printf("Dial from %s to %s\n", udpAddr.String(), remoteAddr.String())
-	sconn, err := optimizedconn.Dial(&udpAddr, remoteAddr)
-	Check(err)
-	host := appnet.MangleSCIONAddr(remote)
+
 	// DCConn, err := appnet.DialAddr(serverAddr)
 
-	sess, err := quic.Dial(sconn, remoteAddr, host, TLSCfg, &quic.Config{
+	sess, err := appquic.Dial(remote, TLSCfg, &quic.Config{
 		KeepAlive: true,
 	})
 	Check(err)
@@ -142,7 +139,7 @@ func runServer(local string, port uint16) error {
 		IP:   serverAddr.Host.IP,
 		Port: int(port),
 	}
-	conn, err := optimizedconn.Listen(&udpAddr)
+	conn, err := appnet.Listen(&udpAddr)
 	Check(err)
 
 	qConn, listenErr := quic.Listen(conn, TLSCfg, &quic.Config{KeepAlive: true})

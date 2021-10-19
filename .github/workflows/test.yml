@@ -45,6 +45,7 @@ jobs:
             # Use IPv4 addresses for this test
             python3 python/topology/generator.py -c ./topology/tiny4.topo
             # Link the gen directory containing sciond_addresses.json and as_list.json
+            cat ~/scion/gen/sciond_addresses.json
             # ln -s ~/scion/gen /home/circleci/project/gen
             mkdir gen-cache
             # Start all AS tiny4.topo

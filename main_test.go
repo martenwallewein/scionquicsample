@@ -1,14 +1,17 @@
 package main
 
 import (
+	"net"
 	"testing"
+
+	"github.com/netsec-ethz/scion-apps/pkg/appnet"
 )
 
-func Test_keyOp_Generate(t *testing.T) {
+func Test_SCIONConn_Listen(t *testing.T) {
 
 	type args struct {
-		x int
-		y int
+		remote string
+		local  string
 	}
 	tests := []struct {
 		name string
@@ -18,25 +21,21 @@ func Test_keyOp_Generate(t *testing.T) {
 		{
 			name: "success",
 			args: args{
-				x: 5,
-				y: 50,
+				remote: "127.0.0.1:41000",
+				local:  "127.0.0.1:40000",
 			},
 			want: "5_50",
-		},
-		{
-			name: "success large integers",
-			args: args{
-				x: 50000,
-				y: 999999,
-			},
-			want: "50000_999999",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			kp := GetKeyOperator()
-			if got := kp.Generate(tt.args.x, tt.args.y); got != tt.want {
-				t.Errorf("keyOp.Generate() = %v, want %v", got, tt.want)
+			serverAddr, err := net.ResolveUDPAddr("udp", tt.args.local)
+			if err != nil {
+				t.Error(err)
+			}
+			_, err = appnet.Listen(serverAddr)
+			if err != nil {
+				t.Error(err)
 			}
 		})
 	}

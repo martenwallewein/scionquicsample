@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net"
 	"testing"
 
@@ -33,10 +34,13 @@ func Test_SCIONConn_Listen(t *testing.T) {
 			if err != nil {
 				t.Error(err)
 			}
-			_, err = appnet.Listen(serverAddr)
+			c, err := appnet.Listen(serverAddr)
 			if err != nil {
 				t.Error(err)
 			}
+
+			fmt.Println(c.LocalAddr())
+
 		})
 	}
 }

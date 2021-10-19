@@ -52,6 +52,6 @@ jobs:
             supervisor/supervisor.sh reload
             supervisor/supervisor.sh start all
     - name: Test
-      run: go test ./...
+      run: go test -v ./...
       env: 
         SCION_DAEMON_ADDRESS: "127.0.0.12:30255"
